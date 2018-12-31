@@ -21,3 +21,5 @@ aaaa allows input for the current cell
 Usage: java RogLangInterp [filename]
 
 NOTE: File name must end with .uwu
+
+Outputs to a file labels [filename].txt in the program's directory
