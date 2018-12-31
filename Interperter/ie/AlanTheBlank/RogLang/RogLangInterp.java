@@ -1,5 +1,3 @@
-package ie.AlanTheBlank.RogLang;
-
 import java.io.*;
 import java.util.Scanner;
 
@@ -180,11 +178,15 @@ public class RogLangInterp{
 	}
 	
 	public static void main(String[] args){
-		if(args[0].contains(".uwu")){
-			File f = new File(args[0]);
-			RogLangInterp w = new RogLangInterp(f, f.getName());
-		}else{
-			System.out.println("Invalid file!  Please use a .uwu file!");
+		try{
+			if(args[0].contains(".uwu")){
+				File f = new File(args[0]);
+				RogLangInterp w = new RogLangInterp(f, f.getName());
+			}else{
+				System.out.println("Invalid file!  Please use a .uwu file!");
+			}
+		}catch(Exception e){
+			System.out.println("Usage: java RogLangInterp [filename]");
 		}
 	}
 }
