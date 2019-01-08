@@ -1,6 +1,10 @@
 import java.io.*;
-import java.util.Scanner;
+import java.util.*;
 
+/** RogLang Interpretator V2.0
+	Author Alan O'Reilly
+	
+**/
 public class RogLangInterp{
 	
 	String[] tokens;
@@ -14,11 +18,11 @@ public class RogLangInterp{
 	InputStreamReader consoleIn;
 	
 	File f;
-	
+	File f_out;
 	Scanner in = new Scanner(System.in);
 	
 	int dataPointer = 0;
-	int charPointer = 0;
+	int entryPointer = 0;
 	
 	int lineCount = 0;
 	
@@ -44,126 +48,162 @@ public class RogLangInterp{
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		
-	}
-	public void interpret(String s){
-		System.out.println(s);
-		char[] bfcode = translate(s);
-		data = new byte[bfcode.length];
-		String bf = "";
-		for(int j = 0; j < bfcode.length; j++){
-			bf += "" + bfcode[j];
-		}
-	
-		for(; charPointer < bf.length(); charPointer++){
-			interpret(bf.charAt(charPointer), bf.toCharArray());
-		}
 	}
 	
-	public char[] translate(String a){
-		char[] bf = new char[getSize(f)];
-		String[] b = a.split(" ");
-		
-		for(int i = 0; i < b.length; i++){
-			if(b[i].equals("ooh")){
-				bf[i] = '>';
+	public RogLangInterp(File f, File f_out){
+		try{
+			this.f = f;
+			this.f_out = f_out;
+			f_out.createNewFile();
+			fileReader = new BufferedReader(new FileReader(f));
+			String content = "";
+			String line = "";
+			fos = new FileOutputStream(f_out);
+			while((line = fileReader.readLine()) != null){
+				content += line;
+				lineCount++;
 			}
-			else if(b[i].equals("ahh")){
-				bf[i] = '<';
-			}
-			else if(b[i].equals("ooo")){
-				bf[i] = '+';
-			}
-			else if(b[i].equals("aaa")){
-				bf[i] = '-';
-			}
-			else if(b[i].equals("ooooo")){
-				bf[i] = '[';
-			}
-			else if(b[i].equals("babe")){
-				bf[i] = ']';
-			}
-			else if(b[i].equals("oooo")){
-				bf[i] = ',';
-			}
-			else if(b[i].equals("aaaa")){
-				bf[i] = '.';
-			}
-			else{}
-		}
-		return bf;
-	}
-	public int getSize(File f){
-		int count = 0;
-		try(Scanner s = new Scanner(new FileInputStream(f))){
-			
-			while(s.hasNext()){
-				s.next();
-				count++;
-			}
-			
+			interpret(content);
+			fos.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		return(count);
+	}
+	public void interpret(String s){
+		System.out.println(s);
+		System.out.println("Tokenizing the input");
+		String[] tokens = tokenizer(s);
+		data = new byte[genCells(tokens)];
+		for(; entryPointer < tokens.length; entryPointer++){
+			interpret(tokens[entryPointer], tokens);
+		}
 	}
 	
-	public void interpret(char s, char[] sa){
+	public int genCells(String[] a){
+		int count = 1;
+		for(int i = 0; i < a.length; i++){
+			if(a[i].equals("ooh")){
+				count++;
+			}else if(a[i].equals("aah")){
+				count--;
+			}
+		}
+		return count;
+	}
+	
+	public String[] tokenizer(String s){
+		String temp = "";
+		System.out.println(s);
+		System.out.println("String is " + s.length() + " characters long");
+		ArrayList<String> tokens = new ArrayList<String>();
+		for(int i = 0; i < s.length(); i++){
+			temp += s.charAt(i);
+			System.out.println(temp);
+			if(temp.equals("ooh")){
+				tokens.add(temp);
+				System.out.println(temp);
+				temp = "";
+			}else if(temp.equals("aah")){
+				tokens.add(temp);
+				System.out.println(temp);
+				temp = "";
+			}else if(temp.equals("oooh")){
+				tokens.add(temp);
+				System.out.println(temp);
+				temp = "";
+			}else if(temp.equals("aaah")){
+				tokens.add(temp);
+				System.out.println(temp);
+				temp = "";
+			}else if(temp.equals("oooooh")){
+				tokens.add(temp);
+				System.out.println(temp);
+				temp = "";
+			}else if(temp.equals("babe")){
+				tokens.add(temp);
+				System.out.println(temp);
+				temp = "";
+			}else if(temp.equals("ooooh")){
+				tokens.add(temp);
+				System.out.println(temp);
+				temp = "";
+			}else if(temp.equals("aaaah")){
+				tokens.add(temp);
+				System.out.println(temp);
+				temp = "";
+			}else if(temp.equals(" ")){
+				temp = "";
+			}
+		}
+		
+		System.out.println(tokens.size() + " entries in the array!");
+		
+		String[] complete = tokens.toArray(new String[tokens.size()]);
+		for(int j = 0; j < complete.length; j++){
+			System.out.print(complete[j] + " ");
+		}
+		return complete;
+	}
+	
+	public void interpret(String s, String[] sa){
+		System.out.println(s);
 		switch(s){
-			case '>':
+			case "ooh":
 				if((dataPointer + 1) > data.length){
-					System.out.println("Error on line " + lineCount + "\n data pointer " + dataPointer + " on postion " + charPointer + " is out of range.");
+					System.out.println("Error on line " + lineCount + "\n data pointer " + dataPointer + " on postion " + entryPointer + " is out of range.");
 					System.exit(1);
 				}else{
 					dataPointer++;
 				}
 				break;
 			
-			case '<':
+			case "aah":
 				if((dataPointer - 1) < 0){
-					System.out.println("Error on line " + lineCount + "\n data pointer " + dataPointer + " on postion " + charPointer + " is negative.");
+					System.out.println("Error on line " + lineCount + "\n data pointer " + dataPointer + " on postion " + entryPointer + " is negative.");
 					System.exit(1);
 				}else{
 					dataPointer--;
 				}
 				break;
 			
-			case '+':
+			case "oooh":
 				data[dataPointer]++;
 				break;
 				
-			case '-':
+			case "aaah":
 				data[dataPointer]--;
 				break;
 			
-			case '[':
+			case "oooooh":
 				if(data[dataPointer] == 0){
 					int i = 1;
 					while(i > 0){
-						char s2 = sa[++charPointer];
-						if(s2 == '['){
+						String s2 = sa[++entryPointer];
+						if(s2.equals("oooooh")){
 							i++;
-						}else if(s2 == ']'){
+						}else if(s2.equals("babe")){
 							i--;
 						}
+						System.out.println(i + "  " + s2);
 					}
 				}
 				break;
 				
-			case ']':
+			case "babe":
 				int i = 1;
 				while(i > 0){
-					char s2 = sa[--charPointer];
-					if(s2 == '['){
+					String s2 = sa[--entryPointer];
+					if(s2.equals("oooooh")){
 						i--;
-					}else if(s2 == ']'){
+					}else if(s2.equals("babe")){
 						i++;
 					}
+					System.out.println(i + " " + s2);
 				}
-				charPointer--;
+				entryPointer--;
 				break;
 			
-			case '.':
+			case "ooooh":
 			try{
 				fos.write((char) data[dataPointer]);
 			}catch(Exception e){
@@ -171,7 +211,7 @@ public class RogLangInterp{
 			}
 				break;
 				
-			case ',':
+			case "aaaah":
 				data[dataPointer] = (byte) in.next().charAt(0);
 				break;
 		}
@@ -180,13 +220,19 @@ public class RogLangInterp{
 	public static void main(String[] args){
 		try{
 			if(args[0].contains(".uwu")){
-				File f = new File(args[0]);
-				RogLangInterp w = new RogLangInterp(f, f.getName());
+				if(args.length == 1){
+					File f = new File(args[0]);
+					RogLangInterp w = new RogLangInterp(f, f.getName());
+				}else if(args.length == 2){
+					File f = new File(args[0]);
+					File f1 = new File(args[1]);
+					RogLangInterp w = new RogLangInterp(f, f1);
+				}					
 			}else{
 				System.out.println("Invalid file!  Please use a .uwu file!");
 			}
 		}catch(Exception e){
-			System.out.println("Usage: java RogLangInterp [filename]");
+			System.out.println("Usage: java RogLangInterp <Input file> [output file]");
 		}
 	}
 }
