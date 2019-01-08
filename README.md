@@ -4,22 +4,23 @@ Based on the popular esolang BrainFuck
 
 ooh moves the cell pointer to the right
 
-ahh moves the cell pointer to the left
+aah moves the cell pointer to the left
 
-ooo adds one to the current cell
+oooh adds one to the current cell
 
-aaa subtracts one from the current cell
+aaah subtracts one from the current cell
 
-ooooo notes the start of a loop
+oooooh notes the start of a loop
 
 babe notes the end of a loop
 
-oooo prints the character of the current cell
+ooooh prints the character of the current cell
 
-aaaa allows input for the current cell
+aaaah allows input for the current cell
 
-Usage: java RogLangInterp [filename]
+Usage: java RogLangInterp [filename] <output filename>
+  
+[] = necessary
+<> = optional
 
-NOTE: File name must end with .uwu
-
-Outputs to a file labels [filename].txt in the program's directory
+NOTE: Input file name must end with .uwu
