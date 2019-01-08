@@ -18,7 +18,7 @@ ooooh prints the character of the current cell
 
 aaaah allows input for the current cell
 
-Usage: java RogLangInterp [filename] <output filename>
+Usage: java RogLangInterp [filename] \<output filename\>
   
 [] = necessary
 <> = optional
